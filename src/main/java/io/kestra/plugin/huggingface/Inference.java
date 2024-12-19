@@ -33,8 +33,15 @@ import static io.micronaut.http.HttpHeaders.CONTENT_TYPE;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Short description for this task",
-    description = "Full description of this task"
+    title = "Task to use the Huggingface Inference API",
+    description = """
+        The Serverless Inference API offers a fast and free way to explore thousands of models for a variety of tasks. Whether you’re prototyping a new application or experimenting with ML capabilities, this API gives you instant access to high-performing models across multiple domains:
+
+            - Text Generation: Including large language models and tool-calling prompts, generate and experiment with high-quality responses.
+            - Image Generation: Easily create customized images, including LoRAs for your own styles.
+            - Document Embeddings: Build search and retrieval systems with SOTA embeddings.
+            - Classical AI Tasks: Ready-to-use models for text classification, image classification, speech recognition, and more.
+        """
 )
 @Plugin(
     examples = {
@@ -73,7 +80,7 @@ import static io.micronaut.http.HttpHeaders.CONTENT_TYPE;
         )
     }
 )
-public class Inference extends Task implements RunnableTask<Inference.Output> {
+public class Inference extends AbstracHttpTask implements RunnableTask<Inference.Output> {
     public static final String HUGGINGFACE_BASE_ENDPOINT = "https://api-inference.huggingface.co/models";
     public static final String WAIT_HEADER = "x-wait-for-model";
     public static final String CACHE_HEADER = "x-use-cache";
@@ -118,14 +125,6 @@ public class Inference extends Task implements RunnableTask<Inference.Output> {
     @Builder.Default
     private Property<Boolean> waitForModel = Property.of(false);
 
-    @Schema(
-        title = "Options",
-        description = "The options to set to customize the HTTP client"
-    )
-    @PluginProperty(dynamic = true)
-    protected RequestOptions options;
-
-
     @Override
     public Inference.Output run(RunContext runContext) throws Exception {
         final String renderedEndpoint = runContext.render(this.endpoint).as(String.class).orElseThrow();
@@ -134,7 +133,7 @@ public class Inference extends Task implements RunnableTask<Inference.Output> {
         final String url = String.join("/", renderedEndpoint, renderedModels);
 
         DefaultHttpClientBuilder clientBuilder = DefaultHttpClient.builder()
-            .configuration(RequestOptions.httpClientConfigurationWithOptions(runContext, this.options))
+            .configuration(this.httpClientConfigurationWithOptions(runContext))
             .uri(URI.create(url));
 
         try (DefaultHttpClient client = clientBuilder.build()) {
