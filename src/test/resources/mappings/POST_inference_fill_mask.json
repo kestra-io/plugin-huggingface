@@ -1,0 +1,45 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/models/google-bert/bert-base-uncased"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "RequestId": "954e322b-29d4-7023-6421-dab1284343b6"
+    },
+    "jsonBody": [
+      {
+        "score": 0.1976442039012909,
+        "token": 2009,
+        "token_str": "it",
+        "sequence": "i love to eat it."
+      },
+      {
+        "score": 0.09866488724946976,
+        "token": 2182,
+        "token_str": "here",
+        "sequence": "i love to eat here."
+      },
+      {
+        "score": 0.06409033387899399,
+        "token": 2045,
+        "token_str": "there",
+        "sequence": "i love to eat there."
+      },
+      {
+        "score": 0.05633990094065666,
+        "token": 2068,
+        "token_str": "them",
+        "sequence": "i love to eat them."
+      },
+      {
+        "score": 0.02524048648774624,
+        "token": 2205,
+        "token_str": "too",
+        "sequence": "i love to eat too."
+      }
+    ]
+  }
+}

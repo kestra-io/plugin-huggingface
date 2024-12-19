@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/models/cardiffnlp/twitter-roberta-base-sentiment-latest"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "RequestId": "954e322b-29d4-7023-6421-dab1284343b6"
+    },
+    "jsonBody": [
+      [
+        {
+          "label" : "neutral",
+          "score" : 0.5659675002098083
+        },
+        {
+          "label" : "positive",
+          "score" : 0.2888110876083374
+        },
+        {
+          "label" : "negative",
+          "score" : 0.14522139728069305
+        }
+      ]
+    ]
+  }
+}
