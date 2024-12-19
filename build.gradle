@@ -30,7 +30,7 @@ java {
 }
 
 group "io.kestra.plugin"
-description 'Plugin template for Kestra'
+description 'Plugin Huggingface for Kestra'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
@@ -46,6 +46,11 @@ dependencies {
     // lombok
     annotationProcessor "org.projectlombok:lombok"
     compileOnly "org.projectlombok:lombok"
+
+    // Micronaut
+    compileOnly "io.micronaut:micronaut-http-client"
+    compileOnly "io.micronaut.reactor:micronaut-reactor"
+    compileOnly "io.micronaut:micronaut-jackson-databind"
 
     // kestra
     annotationProcessor group: "io.kestra", name: "processor", version: kestraVersion
@@ -98,6 +103,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine"
     testImplementation "org.hamcrest:hamcrest"
     testImplementation "org.hamcrest:hamcrest-library"
+    testImplementation "org.wiremock:wiremock:3.9.2"
 }
 
 /**********************************************************************************************************************\
@@ -157,8 +163,8 @@ jar {
     manifest {
         attributes(
                 "X-Kestra-Name": project.name,
-                "X-Kestra-Title": "Template",
-                "X-Kestra-Group": project.group + ".templates",
+                "X-Kestra-Title": "Huggingface",
+                "X-Kestra-Group": project.group + ".huggingface",
                 "X-Kestra-Description": project.description,
                 "X-Kestra-Version": project.version
         )
