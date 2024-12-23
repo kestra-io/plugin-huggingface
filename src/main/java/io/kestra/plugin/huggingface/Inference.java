@@ -47,35 +47,37 @@ import static io.micronaut.http.HttpHeaders.CONTENT_TYPE;
     examples = {
         @io.kestra.core.models.annotations.Example(
             title = "Use inference for text classification",
+            full = true,
             code = """
                     id: huggingface_inference_text
                     namespace: company.team
 
                     tasks:
                     - id: huggingface_inference
-                        type: io.kestra.plugin.huggingface.Inference
-                        model: cardiffnlp/twitter-roberta-base-sentiment-latest
-                        apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
-                        inputs: "I want a refund"
+                      type: io.kestra.plugin.huggingface.Inference
+                      model: cardiffnlp/twitter-roberta-base-sentiment-latest
+                      apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
+                      inputs: "I want a refund"
                 """
         ),
         @io.kestra.core.models.annotations.Example(
             title = "Use inference for image classification.",
+            full = true,
             code = """
                     id: huggingface_inference
                     namespace: company.team
 
                     tasks:
                     - id: huggingface_inference_image
-                        type: io.kestra.plugin.huggingface.Inference
-                        model: google/vit-base-patch16-224
-                        apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
-                        inputs: "{{ read('my-base64-image.txt') }}"
-                        parameters:
-                            function_to_apply: sigmoid,
-                            top_k: 3
-                        waitForModel: true
-                        useCache: false
+                      type: io.kestra.plugin.huggingface.Inference
+                      model: google/vit-base-patch16-224
+                      apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
+                      inputs: "{{ read('my-base64-image.txt') }}"
+                      parameters:
+                        function_to_apply: sigmoid,
+                        top_k: 3
+                      waitForModel: true
+                      useCache: false
                 """
         )
     }
