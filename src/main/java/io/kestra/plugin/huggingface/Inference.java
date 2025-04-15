@@ -33,7 +33,7 @@ import static io.micronaut.http.HttpHeaders.CONTENT_TYPE;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Task to use the Huggingface Inference API",
+    title = "Call the HuggingFace Inference API.",
     description = """
         The Serverless Inference API offers a fast and free way to explore thousands of models for a variety of tasks. Whether you’re prototyping a new application or experimenting with ML capabilities, this API gives you instant access to high-performing models across multiple domains:
 
