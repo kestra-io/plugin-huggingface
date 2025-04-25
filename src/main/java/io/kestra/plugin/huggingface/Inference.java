@@ -1,31 +1,20 @@
 package io.kestra.plugin.huggingface;
 
+import io.kestra.core.http.HttpRequest;
+import io.kestra.core.http.HttpResponse;
+import io.kestra.core.http.client.HttpClient;
 import io.kestra.core.models.annotations.Plugin;
-import io.kestra.core.models.annotations.PluginProperty;
-import io.kestra.core.models.property.Data;
 import io.kestra.core.models.property.Property;
-import io.kestra.core.serializers.JacksonMapper;
-import io.micronaut.http.HttpRequest;
-import io.micronaut.http.client.DefaultHttpClientConfiguration;
-import io.micronaut.http.client.netty.DefaultHttpClient;
-import io.micronaut.http.client.netty.DefaultHttpClientBuilder;
+import io.kestra.core.models.tasks.RunnableTask;
+import io.kestra.core.runners.RunContext;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.apache.commons.lang3.StringUtils;
-import io.kestra.core.models.tasks.RunnableTask;
-import io.kestra.core.models.tasks.Task;
-import io.kestra.core.runners.RunContext;
-import org.slf4j.Logger;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-
-import static io.micronaut.http.HttpHeaders.AUTHORIZATION;
-import static io.micronaut.http.HttpHeaders.CONTENT_TYPE;
 
 @SuperBuilder
 @ToString
@@ -134,37 +123,39 @@ public class Inference extends AbstracHttpTask implements RunnableTask<Inference
         final String renderedApiKey = runContext.render(this.apiKey).as(String.class).orElseThrow();
         final String url = String.join("/", renderedEndpoint, renderedModels);
 
-        DefaultHttpClientBuilder clientBuilder = DefaultHttpClient.builder()
-            .configuration(this.httpClientConfigurationWithOptions(runContext))
-            .uri(URI.create(url));
-
-        try (DefaultHttpClient client = clientBuilder.build()) {
+        try (HttpClient client = new HttpClient(runContext,super.httpClientConfigurationWithOptions())) {
             var payload = new HashMap<String, Object>();
             var inputsRendered = runContext.render(this.inputs).as(String.class).orElseThrow();
             var parametersRendered = runContext.render(this.parameters).asMap(String.class, Object.class);
 
             payload.put("inputs", inputsRendered);
+
             if(!parametersRendered.isEmpty()) {
                 payload.put("parameters", parametersRendered);
             }
 
+            HttpRequest request = HttpRequest.builder()
+                .addHeader("Authorization", "Bearer " + renderedApiKey)
+                .addHeader("Content-Type", "application/json")
+                .addHeader(CACHE_HEADER, runContext.render(this.useCache).as(Boolean.class).orElseThrow().toString())
+                .addHeader(WAIT_HEADER, runContext.render(this.waitForModel).as(Boolean.class).orElseThrow().toString())
+                .uri(URI.create(url))
+                .method("POST")
+                .body(HttpRequest.JsonRequestBody.builder()
+                    .content(payload)
+                    .build())
+                .build();
+
             runContext.logger().debug("Use Huggingface Inference API with input: {}", payload);
 
-            Object output = client.toBlocking().retrieve(HttpRequest.POST(url, payload)
-                .body(payload)
-                .headers(Map.of(
-                    AUTHORIZATION, String.join(" ", "Bearer", renderedApiKey),
-                    CONTENT_TYPE, "application/json",
-                    CACHE_HEADER, runContext.render(this.useCache).as(Boolean.class).orElseThrow().toString(),
-                    WAIT_HEADER, runContext.render(this.waitForModel).as(Boolean.class).orElseThrow().toString()
-                ))
-            );
+            HttpResponse<Object> response = client.request(request, Object.class);
+
+            runContext.logger().debug("Response: {}", response.getBody());
 
             return Output.builder()
-                .output(output)
+                .output(response.getBody())
                 .build();
         }
-
     }
 
     /**
