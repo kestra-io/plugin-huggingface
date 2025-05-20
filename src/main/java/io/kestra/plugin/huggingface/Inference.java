@@ -47,7 +47,7 @@ import java.util.Map;
                       model: cardiffnlp/twitter-roberta-base-sentiment-latest
                       apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
                       inputs: "I want a refund"
-                """
+                    """
         ),
         @io.kestra.core.models.annotations.Example(
             title = "Use inference for image classification.",
@@ -67,7 +67,7 @@ import java.util.Map;
                         top_k: 3
                       waitForModel: true
                       useCache: false
-                """
+                    """
         )
     }
 )
