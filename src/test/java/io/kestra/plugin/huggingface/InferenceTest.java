@@ -38,10 +38,10 @@ class InferenceTest {
         RunContext runContext = runContextFactory.of(Map.of());
 
         Inference task = Inference.builder()
-            .apiKey(Property.of("mock"))
-            .model(Property.of("google-bert/bert-base-uncased"))
-            .inputs(Property.of("I love to eat [MASK]."))
-            .endpoint(Property.of(endpoint))
+            .apiKey(Property.ofValue("mock"))
+            .model(Property.ofValue("google-bert/bert-base-uncased"))
+            .inputs(Property.ofValue("I love to eat [MASK]."))
+            .endpoint(Property.ofValue(endpoint))
             .build();
 
         Inference.Output runOutput = task.run(runContext);
@@ -61,10 +61,10 @@ class InferenceTest {
         RunContext runContext = runContextFactory.of(Map.of());
 
         Inference task = Inference.builder()
-            .apiKey(Property.of("mock"))
-            .model(Property.of("cardiffnlp/twitter-roberta-base-sentiment-latest"))
-            .inputs(Property.of("I am hungry"))
-            .endpoint(Property.of(endpoint))
+            .apiKey(Property.ofValue("mock"))
+            .model(Property.ofValue("cardiffnlp/twitter-roberta-base-sentiment-latest"))
+            .inputs(Property.ofValue("I am hungry"))
+            .endpoint(Property.ofValue(endpoint))
             .build();
 
         Inference.Output runOutput = task.run(runContext);
@@ -78,9 +78,9 @@ class InferenceTest {
         RunContext runContext = runContextFactory.of(Map.of());
 
         Inference task = Inference.builder()
-            .apiKey(Property.of(this.apiKey))
-            .model(Property.of("cardiffnlp/twitter-roberta-base-sentiment-latest"))
-            .inputs(Property.of("I am hungry"))
+            .apiKey(Property.ofValue(this.apiKey))
+            .model(Property.ofValue("cardiffnlp/twitter-roberta-base-sentiment-latest"))
+            .inputs(Property.ofValue("I am hungry"))
             .build();
 
         Inference.Output runOutput = task.run(runContext);
