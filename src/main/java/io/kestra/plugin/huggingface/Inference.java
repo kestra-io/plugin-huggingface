@@ -93,7 +93,7 @@ public class Inference extends AbstracHttpTask implements RunnableTask<Inference
 
     @Schema(title = "API endpoint", description = "Default value of the Huggingface API is https://api-inference.huggingface.co/models")
     @Builder.Default
-    private Property<String> endpoint = Property.of(HUGGINGFACE_BASE_ENDPOINT);
+    private Property<String> endpoint = Property.ofValue(HUGGINGFACE_BASE_ENDPOINT);
 
     @Schema(
         title = "Use cache",
@@ -104,7 +104,7 @@ public class Inference extends AbstracHttpTask implements RunnableTask<Inference
             """
     )
     @Builder.Default
-    private Property<Boolean> useCache = Property.of(true);
+    private Property<Boolean> useCache = Property.ofValue(true);
 
     @Schema(
         title = "Wait for model",
@@ -114,7 +114,7 @@ public class Inference extends AbstracHttpTask implements RunnableTask<Inference
             """
     )
     @Builder.Default
-    private Property<Boolean> waitForModel = Property.of(false);
+    private Property<Boolean> waitForModel = Property.ofValue(false);
 
     @Override
     public Inference.Output run(RunContext runContext) throws Exception {
