@@ -1,6 +1,5 @@
 package io.kestra.plugin.huggingface;
 
-import io.kestra.core.exceptions.IllegalVariableEvaluationException;
 import io.kestra.core.http.client.configurations.HttpConfiguration;
 import io.kestra.core.http.client.configurations.TimeoutConfiguration;
 import io.kestra.core.models.annotations.PluginProperty;
@@ -56,9 +55,9 @@ public abstract class AbstractHttpTask extends Task {
         private final Property<Charset> defaultCharset = Property.ofValue(StandardCharsets.UTF_8);
     }
 
-    public HttpConfiguration httpClientConfigurationWithOptions() throws IllegalVariableEvaluationException {
+    public HttpConfiguration httpClientConfigurationWithOptions() {
         HttpConfiguration.HttpConfigurationBuilder httpConfigurationBuilder = HttpConfiguration.builder();
-        if (this.options!=null){
+        if (this.options != null) {
             return httpConfigurationBuilder
                 .timeout(TimeoutConfiguration.builder()
                     .connectTimeout(this.options.getConnectTimeout())
