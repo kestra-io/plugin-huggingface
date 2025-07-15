@@ -13,6 +13,7 @@ import io.kestra.core.runners.RunContextFactory;
 
 import jakarta.inject.Inject;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,14 +47,18 @@ class InferenceTest {
 
         Inference.Output runOutput = task.run(runContext);
 
-        assertThat(runOutput.getOutput(), notNullValue());
-        ArrayNode resultArray = ((ArrayNode) JacksonMapper.ofJson().readTree((String) runOutput.getOutput()));
-        assertThat(resultArray.size(), is(5));
-        assertThat(resultArray.get(0).get("score").asDouble(), is(0.1976442039012909d));
-        assertThat(resultArray.get(0).get("token").asInt(), is(2009));
-        assertThat(resultArray.get(0).get("token_str").asText(), is("it"));
-        assertThat(resultArray.get(0).get("sequence").asText(), is("i love to eat it."));
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) runOutput.getOutput();
+
+        assertThat(resultList, notNullValue());
+        assertThat(resultList.size(), is(5));
+
+        Map<String, Object> firstResult = resultList.getFirst();
+        assertThat(firstResult.get("score"), is(0.1976442039012909d));
+        assertThat(firstResult.get("token"), is(2009));
+        assertThat(firstResult.get("token_str"), is("it"));
+        assertThat(firstResult.get("sequence"), is("i love to eat it."));
     }
+
 
     @Test
     void testHuggingFaceInference_textClassification(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
