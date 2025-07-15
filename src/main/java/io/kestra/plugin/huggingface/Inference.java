@@ -71,7 +71,7 @@ import java.util.Map;
         )
     }
 )
-public class Inference extends AbstracHttpTask implements RunnableTask<Inference.Output> {
+public class Inference extends AbstractHttpTask implements RunnableTask<Inference.Output> {
     public static final String HUGGINGFACE_BASE_ENDPOINT = "https://api-inference.huggingface.co/models";
     public static final String WAIT_HEADER = "x-wait-for-model";
     public static final String CACHE_HEADER = "x-use-cache";

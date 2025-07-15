@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit;
 @EqualsAndHashCode
 @Getter
 @NoArgsConstructor
-public abstract class AbstracHttpTask extends Task {
+public abstract class AbstractHttpTask extends Task {
 
     @Schema(
         title = "Options",
