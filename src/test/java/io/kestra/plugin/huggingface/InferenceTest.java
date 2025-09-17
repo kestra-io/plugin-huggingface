@@ -1,12 +1,9 @@
 package io.kestra.plugin.huggingface;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.models.property.Property;
-import io.kestra.core.serializers.JacksonMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.runners.RunContextFactory;
@@ -79,7 +76,7 @@ class InferenceTest {
     }
 
     @Test
-    @EnabledIfEnvironmentVariable(named = "HUGGINGFACE_API_KEY", matches = "true")
+    @EnabledIfEnvironmentVariable(named = "HUGGINGFACE_API_KEY", matches = ".*")
     void testHuggingFaceInferenceWithRealApi() throws Exception {
         RunContext runContext = runContextFactory.of(Map.of());
 
