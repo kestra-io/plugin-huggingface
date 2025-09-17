@@ -1,17 +1,15 @@
 package io.kestra.plugin.huggingface;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.kestra.core.junit.annotations.KestraTest;
 import io.kestra.core.models.property.Property;
-import io.kestra.core.serializers.JacksonMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import io.kestra.core.runners.RunContext;
 import io.kestra.core.runners.RunContextFactory;
 
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +26,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @WireMockTest
 class InferenceTest {
 
-    private static final String apiKey = "";
+    private static final String apiKey = System.getenv("HUGGINGFACE_API_KEY");;
 
     @Inject
     private RunContextFactory runContextFactory;
@@ -78,12 +76,12 @@ class InferenceTest {
     }
 
     @Test
-    @Disabled("Integration test with Huggingface API - requires an API key")
+    @EnabledIfEnvironmentVariable(named = "HUGGINGFACE_API_KEY", matches = ".*")
     void testHuggingFaceInferenceWithRealApi() throws Exception {
         RunContext runContext = runContextFactory.of(Map.of());
 
         Inference task = Inference.builder()
-            .apiKey(Property.ofValue(this.apiKey))
+            .apiKey(Property.ofValue(apiKey))
             .model(Property.ofValue("cardiffnlp/twitter-roberta-base-sentiment-latest"))
             .inputs(Property.ofValue("I am hungry"))
             .build();
