@@ -12,6 +12,7 @@ import io.kestra.core.runners.RunContext;
 import io.kestra.core.runners.RunContextFactory;
 
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @WireMockTest
 class InferenceTest {
 
-    private static final String apiKey = "";
+    private static final String apiKey = System.getenv("HUGGINGFACE_API_KEY");;
 
     @Inject
     private RunContextFactory runContextFactory;
@@ -78,12 +79,12 @@ class InferenceTest {
     }
 
     @Test
-    @Disabled("Integration test with Huggingface API - requires an API key")
+    @EnabledIfEnvironmentVariable(named = "HUGGINGFACE_API_KEY", matches = "true")
     void testHuggingFaceInferenceWithRealApi() throws Exception {
         RunContext runContext = runContextFactory.of(Map.of());
 
         Inference task = Inference.builder()
-            .apiKey(Property.ofValue(this.apiKey))
+            .apiKey(Property.ofValue(apiKey))
             .model(Property.ofValue("cardiffnlp/twitter-roberta-base-sentiment-latest"))
             .inputs(Property.ofValue("I am hungry"))
             .build();
