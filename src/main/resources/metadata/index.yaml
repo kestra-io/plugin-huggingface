@@ -1,0 +1,8 @@
+group: io.kestra.plugin.huggingface
+name: "huggingface"
+title: "Huggingface"
+description: "Plugin Huggingface for Kestra"
+body: ""
+videos: []
+createdBy: "Kestra Core Team"
+managedBy: "Kestra Core Team"
