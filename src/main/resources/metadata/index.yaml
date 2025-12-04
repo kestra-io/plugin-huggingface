@@ -1,8 +1,8 @@
 group: io.kestra.plugin.huggingface
 name: "huggingface"
 title: "Huggingface"
-description: "Plugin Huggingface for Kestra"
-body: ""
+description: "Tasks that call Hugging Face Inference APIs."
+body: "Set your Hugging Face token, model endpoint, and payload (text, image, or other inputs) to run hosted models via the Inference API and return predictions for downstream tasks."
 videos: []
 createdBy: "Kestra Core Team"
 managedBy: "Kestra Core Team"
