@@ -22,14 +22,10 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Call the HuggingFace Inference API.",
+    title = "Invoke Hugging Face Inference API",
     description = """
-        The Serverless Inference API offers a fast and free way to explore thousands of models for a variety of tasks. Whether you’re prototyping a new application or experimenting with ML capabilities, this API gives you instant access to high-performing models across multiple domains:
-
-            - Text Generation: Including large language models and tool-calling prompts, generate and experiment with high-quality responses.
-            - Image Generation: Easily create customized images, including LoRAs for your own styles.
-            - Document Embeddings: Build search and retrieval systems with SOTA embeddings.
-            - Classical AI Tasks: Ready-to-use models for text classification, image classification, speech recognition, and more.
+        Sends rendered inputs to a Hugging Face model repository using the Serverless Inference API. Requires a Bearer `apiKey`; defaults to https://api-inference.huggingface.co/models. 
+        Sets `x-use-cache` to true by default (disable for nondeterministic models) and `x-wait-for-model` to false (cold models may return HTTP 503 unless enabled).
         """
 )
 @Plugin(
@@ -76,31 +72,29 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
     public static final String WAIT_HEADER = "x-wait-for-model";
     public static final String CACHE_HEADER = "x-use-cache";
 
-    @Schema(title = "API Key", description = "Huggingface API key (ex: hf_********)")
+    @Schema(title = "API Key", description = "Hugging Face token sent as Bearer auth (ex: hf_********)")
     @NotNull
     private Property<String> apiKey;
 
-    @Schema(title = "Model", description = "Model used for the Inference api (ex: cardiffnlp/twitter-roberta-base-sentiment-latest, google/gemma-2-2b-it)")
+    @Schema(title = "Model", description = "Model repository path appended to the endpoint (ex: cardiffnlp/twitter-roberta-base-sentiment-latest)")
     @NotNull
     private Property<String> model;
 
-    @Schema(title = "Inputs", description = "Inputs required for the specific model")
+    @Schema(title = "Inputs", description = "Rendered payload sent as `inputs` (text, JSON string, or base64 content expected by the model)")
     @NotNull
     private Property<String> inputs;
 
-    @Schema(title = "Parameters", description = "Map of optional parameters depending on the model")
+    @Schema(title = "Parameters", description = "Optional rendered parameters map added when not empty; content depends on the model")
     private Property<Map<String, Object>> parameters;
 
-    @Schema(title = "API endpoint", description = "Default value of the Huggingface API is https://api-inference.huggingface.co/models")
+    @Schema(title = "API endpoint", description = "Inference base URL; defaults to https://api-inference.huggingface.co/models")
     @Builder.Default
     private Property<String> endpoint = Property.ofValue(HUGGINGFACE_BASE_ENDPOINT);
 
     @Schema(
         title = "Use cache",
         description = """
-            There is a cache layer on the inference API to speed up requests when the inputs are exactly the same.
-            Many models, such as classifiers and embedding models, can use those results as is if they are deterministic, meaning the results will be the same.
-            However, if you use a nondeterministic model, you can disable the cache mechanism from being used, resulting in a real new query.
+            Enables the inference cache via `x-use-cache`; default true for deterministic models. Disable for nondeterministic models to force fresh inference.
             """
     )
     @Builder.Default
@@ -109,8 +103,7 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
     @Schema(
         title = "Wait for model",
         description = """
-            When a model is warm, it is ready to be used and you will get a response relatively quickly.
-            However, some models are cold and need to be loaded before they can be used. In that case, you will get a 503 error.
+            Adds `x-wait-for-model` header; default false. When false, cold models return HTTP 503 instead of waiting to load.
             """
     )
     @Builder.Default
@@ -165,7 +158,8 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
     @Getter
     public static class Output implements io.kestra.core.models.tasks.Output {
         @Schema(
-            title = "Output returned by the Huggingface API"
+            title = "Output returned by the Hugging Face API",
+            description = "Raw response body from the inference request"
         )
         private final Object output;
     }
