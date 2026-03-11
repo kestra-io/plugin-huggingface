@@ -1,5 +1,9 @@
 package io.kestra.plugin.huggingface;
 
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+
 import io.kestra.core.http.HttpRequest;
 import io.kestra.core.http.HttpResponse;
 import io.kestra.core.http.client.HttpClient;
@@ -7,14 +11,11 @@ import io.kestra.core.models.annotations.Plugin;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.RunnableTask;
 import io.kestra.core.runners.RunContext;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @SuperBuilder
 @ToString
@@ -38,36 +39,36 @@ import java.util.Map;
             title = "Use inference for text classification",
             full = true,
             code = """
-                    id: huggingface_inference_text
-                    namespace: company.team
+                id: huggingface_inference_text
+                namespace: company.team
 
-                    tasks:
-                    - id: huggingface_inference
-                      type: io.kestra.plugin.huggingface.Inference
-                      model: cardiffnlp/twitter-roberta-base-sentiment-latest
-                      apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
-                      inputs: "I want a refund"
-                    """
+                tasks:
+                - id: huggingface_inference
+                  type: io.kestra.plugin.huggingface.Inference
+                  model: cardiffnlp/twitter-roberta-base-sentiment-latest
+                  apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
+                  inputs: "I want a refund"
+                """
         ),
         @io.kestra.core.models.annotations.Example(
             title = "Use inference for image classification.",
             full = true,
             code = """
-                    id: huggingface_inference
-                    namespace: company.team
+                id: huggingface_inference
+                namespace: company.team
 
-                    tasks:
-                    - id: huggingface_inference_image
-                      type: io.kestra.plugin.huggingface.Inference
-                      model: google/vit-base-patch16-224
-                      apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
-                      inputs: "{{ read('my-base64-image.txt') }}"
-                      parameters:
-                        function_to_apply: sigmoid,
-                        top_k: 3
-                      waitForModel: true
-                      useCache: false
-                    """
+                tasks:
+                - id: huggingface_inference_image
+                  type: io.kestra.plugin.huggingface.Inference
+                  model: google/vit-base-patch16-224
+                  apiKey: "{{ secret('HUGGINGFACE_API_KEY') }}"
+                  inputs: "{{ read('my-base64-image.txt') }}"
+                  parameters:
+                    function_to_apply: sigmoid,
+                    top_k: 3
+                  waitForModel: true
+                  useCache: false
+                """
         )
     }
 )
@@ -123,14 +124,14 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
         final String renderedApiKey = runContext.render(this.apiKey).as(String.class).orElseThrow();
         final String url = String.join("/", renderedEndpoint, renderedModels);
 
-        try (HttpClient client = new HttpClient(runContext,super.httpClientConfigurationWithOptions())) {
+        try (HttpClient client = new HttpClient(runContext, super.httpClientConfigurationWithOptions())) {
             var payload = new HashMap<String, Object>();
             var inputsRendered = runContext.render(this.inputs).as(String.class).orElseThrow();
             var parametersRendered = runContext.render(this.parameters).asMap(String.class, Object.class);
 
             payload.put("inputs", inputsRendered);
 
-            if(!parametersRendered.isEmpty()) {
+            if (!parametersRendered.isEmpty()) {
                 payload.put("parameters", parametersRendered);
             }
 
@@ -141,9 +142,11 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
                 .addHeader(WAIT_HEADER, runContext.render(this.waitForModel).as(Boolean.class).orElseThrow().toString())
                 .uri(URI.create(url))
                 .method("POST")
-                .body(HttpRequest.JsonRequestBody.builder()
-                    .content(payload)
-                    .build())
+                .body(
+                    HttpRequest.JsonRequestBody.builder()
+                        .content(payload)
+                        .build()
+                )
                 .build();
 
             runContext.logger().debug("Use Huggingface Inference API with input: {}", payload);

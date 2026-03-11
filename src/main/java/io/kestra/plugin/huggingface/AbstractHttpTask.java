@@ -1,18 +1,19 @@
 package io.kestra.plugin.huggingface;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+
 import io.kestra.core.http.client.configurations.HttpConfiguration;
 import io.kestra.core.http.client.configurations.TimeoutConfiguration;
 import io.kestra.core.models.annotations.PluginProperty;
 import io.kestra.core.models.property.Property;
 import io.kestra.core.models.tasks.Task;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 @SuperBuilder
 @ToString
@@ -59,10 +60,12 @@ public abstract class AbstractHttpTask extends Task {
         HttpConfiguration.HttpConfigurationBuilder httpConfigurationBuilder = HttpConfiguration.builder();
         if (this.options != null) {
             return httpConfigurationBuilder
-                .timeout(TimeoutConfiguration.builder()
-                    .connectTimeout(this.options.getConnectTimeout())
-                    .readIdleTimeout(this.options.getReadIdleTimeout())
-                    .build())
+                .timeout(
+                    TimeoutConfiguration.builder()
+                        .connectTimeout(this.options.getConnectTimeout())
+                        .readIdleTimeout(this.options.getReadIdleTimeout())
+                        .build()
+                )
                 .defaultCharset(this.options.getDefaultCharset()).build();
         }
         return httpConfigurationBuilder.build();

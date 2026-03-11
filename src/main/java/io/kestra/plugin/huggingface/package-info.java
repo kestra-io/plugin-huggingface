@@ -1,4 +1,5 @@
-@PluginSubGroup(title = "Hugging Face",
+@PluginSubGroup(
+    title = "Hugging Face",
     categories = { PluginSubGroup.PluginCategory.AI }
 )
 package io.kestra.plugin.huggingface;
