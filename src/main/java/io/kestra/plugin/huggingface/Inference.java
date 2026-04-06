@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import io.kestra.core.models.annotations.PluginProperty;
 
 @SuperBuilder
 @ToString
@@ -79,21 +80,26 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
 
     @Schema(title = "API Key", description = "Huggingface API key (ex: hf_********)")
     @NotNull
+    @PluginProperty(group = "main")
     private Property<String> apiKey;
 
     @Schema(title = "Model", description = "Model used for the Inference api (ex: cardiffnlp/twitter-roberta-base-sentiment-latest, google/gemma-2-2b-it)")
     @NotNull
+    @PluginProperty(group = "main")
     private Property<String> model;
 
     @Schema(title = "Inputs", description = "Inputs required for the specific model")
     @NotNull
+    @PluginProperty(group = "main")
     private Property<String> inputs;
 
     @Schema(title = "Parameters", description = "Map of optional parameters depending on the model")
+    @PluginProperty(group = "main")
     private Property<Map<String, Object>> parameters;
 
     @Schema(title = "API endpoint", description = "Default value of the Huggingface API is https://api-inference.huggingface.co/models")
     @Builder.Default
+    @PluginProperty(group = "connection")
     private Property<String> endpoint = Property.ofValue(HUGGINGFACE_BASE_ENDPOINT);
 
     @Schema(
@@ -105,6 +111,7 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
             """
     )
     @Builder.Default
+    @PluginProperty(group = "advanced")
     private Property<Boolean> useCache = Property.ofValue(true);
 
     @Schema(
@@ -115,6 +122,7 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
             """
     )
     @Builder.Default
+    @PluginProperty(group = "execution")
     private Property<Boolean> waitForModel = Property.ofValue(false);
 
     @Override
