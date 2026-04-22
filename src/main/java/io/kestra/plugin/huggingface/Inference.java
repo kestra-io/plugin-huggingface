@@ -80,7 +80,7 @@ public class Inference extends AbstractHttpTask implements RunnableTask<Inferenc
 
     @Schema(title = "API Key", description = "Huggingface API key (ex: hf_********)")
     @NotNull
-    @PluginProperty(group = "main")
+    @PluginProperty(group = "main", secret = true)
     private Property<String> apiKey;
 
     @Schema(title = "Model", description = "Model used for the Inference api (ex: cardiffnlp/twitter-roberta-base-sentiment-latest, google/gemma-2-2b-it)")
