@@ -24,7 +24,7 @@ import io.kestra.core.models.annotations.PluginProperty;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Call the HuggingFace Inference API.",
+    title = "Call the HuggingFace Inference API",
     description = """
         The Serverless Inference API offers a fast and free way to explore thousands of models for a variety of tasks. Whether you’re prototyping a new application or experimenting with ML capabilities, this API gives you instant access to high-performing models across multiple domains:
 
@@ -52,7 +52,7 @@ import io.kestra.core.models.annotations.PluginProperty;
                 """
         ),
         @io.kestra.core.models.annotations.Example(
-            title = "Use inference for image classification.",
+            title = "Use inference for image classification",
             full = true,
             code = """
                 id: huggingface_inference
