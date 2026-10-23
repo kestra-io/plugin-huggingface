@@ -86,7 +86,6 @@ class InferenceTest {
     @SuppressWarnings("deprecation")
     @Test
     void flowSettingDeprecatedOptionsStillValidatesAndRuns(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
-        // Flows written before the deprecation still set these options: they must keep parsing, validating and running.
         var flow = YamlParser.parse(
             """
                 id: huggingface_deprecated_options
